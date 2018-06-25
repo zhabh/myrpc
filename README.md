@@ -1,6 +1,6 @@
 
 # 简介
-客户端和服务器端网络通信协议生成以及调度功能模组，该项目的设计主要针对网络游戏服务器特点定制开发，客户端和服务器的协议使用一个配置自动生成两端通信逻辑
+客户端和服务器端网络通信协议生成以及调度功能模组
 * 采用rpc架构，客户端像调用本地服务一样调用远程服务，让远程服务调用更简单、透明
 * 根据游戏功能不断迭代的特点，增加服务不影响原有服务，通过修改配置文件能快速部署新服务接口
 * 支持服务实例的扩展，相同服务可部署多个服务实例提高服务能力。
@@ -13,7 +13,7 @@
 用户协议支持的参数类型包括enum类型，struct类型和string,uint64,uint32,bool,float,double等原生类型,从而可以满足大部分游戏业务需要。
 
 ## 内部通信高效且轻量级
-crucis_proto底层网络通信使用boost-asio异步通信,使用第三方高效率的通信库,系统更稳定代码简洁易懂.
+底层网络通信使用boost-asio异步通信,使用第三方高效率的通信库,系统更稳定代码简洁易懂.
 
 ##自定义网络通信格式
 采用自定义网络包的设计，保证数据的可靠性和安全性，一方面由TCP协议保证，同时可扩展加密算法和防伪造包验证等功能。
@@ -41,7 +41,7 @@ crucis_proto底层网络通信使用boost-asio异步通信,使用第三方高效
 # 快速入门
 下面以 create_user_test 服务为例子介绍怎么生成服务和调用。该服务定义一个创建角色的接口
 ## 1.添加服务
-首先定义协议文件create_user_test.cs,加入到crucis_proto\tools\proto_auto\CofProtoDesc文件夹下，编译crucis_proto\tools\proto_auto\proto_auto.sln工程。
+首先定义协议文件create_user_test.cs,加入到myrpc\tools\proto_auto\CofProtoDesc文件夹下，编译myrpc\tools\proto_auto\proto_auto.sln工程。
 create_user_test.cs内容摘要:
 
 ```csharp
@@ -77,16 +77,16 @@ create_user_test.cs内容摘要:
 ```
 
 ## 2.生成代码
-运行\crucis_proto\tools\auto.bat，该文件自动进行如下几步操作:
+运行\myrpc\tools\auto.bat，该文件自动进行如下几步操作:
 
 * 1)文件可以生成自定义的协议文件create_user_test_param_define,它包含接口的输入和输出参数的结构
 
 * 2)自动生成服务实现的基础代码create_user_test.{h,cpp}
 
-* 3)并拷贝上面所有的{.h,.cpp}文件到C++工程目录crucis_proto\source\services
+* 3)并拷贝上面所有的{.h,.cpp}文件到C++工程目录myrpc\source\services
 
 ## 3.实现服务
-在如下代码中添加服务器端的逻辑代码 "crucis_proto\source\services\implement.h"
+在如下代码中添加服务器端的逻辑代码 "myrpc\source\services\implement.h"
 
 ```c++
 class create_user_test_impl : public create_user_test_server {
