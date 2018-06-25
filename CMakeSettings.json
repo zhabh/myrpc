@@ -1,0 +1,112 @@
+{
+  // 请参阅 https://go.microsoft.com//fwlink//?linkid=834763 了解有关此文件的详细信息。
+  "configurations": [
+    {
+      "name": "x86-Debug",
+      "generator": "Visual Studio 15 2017",
+      "configurationType": "Debug",
+      "inheritEnvironments": [ "msvc_x86" ],
+      "buildRoot": "${workspaceRoot}\\.cmake_build_vs\\${workspaceHash}\\build\\${name}",
+      "installRoot": "${workspaceRoot}\\.cmake_build_vs\\${workspaceHash}\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "-v:minimal",
+      "variables": [
+        {
+          "name": "CMAKE_TOOLCHAIN_FILE",
+          "value": "${env.VCPKG_CMAKE_TOOLCHAIN_FILE}" //"D:/src/c++/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        },
+        {
+          "name": "VCPKG_TARGET_TRIPLET",
+          "value": "x64-windows-static"
+        },
+        {
+          "name": "MSVC_RUNTIME",
+          "value": "static" // static or dynamic
+        }
+      ],
+      "ctestCommandArgs": ""
+    },
+    {
+      "name": "x86-Release",
+      "generator": "Visual Studio 15 2017",
+      "configurationType": "RelWithDebInfo",
+      "inheritEnvironments": [ "msvc_x86" ],
+      "buildRoot": "${workspaceRoot}\\.cmake_build_vs\\${workspaceHash}\\build\\${name}",
+      "installRoot": "${workspaceRoot}\\.cmake_build_vs\\${workspaceHash}\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "-v:minimal",
+      "variables": [
+        {
+          "name": "CMAKE_TOOLCHAIN_FILE",
+          "value": "${env.VCPKG_CMAKE_TOOLCHAIN_FILE}" //"D:/src/c++/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        },
+        {
+          "name": "VCPKG_TARGET_TRIPLET",
+          "value": "x64-windows-static"
+        },
+        {
+          "name": "MSVC_RUNTIME",
+          "value": "static" // static or dynamic
+        }
+      ],
+      "ctestCommandArgs": ""
+    },
+    {
+      "name": "x64-Debug",
+      "generator": "Visual Studio 15 2017 Win64",
+      "configurationType": "Debug",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "buildRoot": "${workspaceRoot}\\.cmake_build_vs\\${workspaceHash}\\build\\${name}",
+      "installRoot": "${workspaceRoot}\\.cmake_build_vs\\${workspaceHash}\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "-m:10 -v:minimal",
+      "variables": [
+        {
+          "name": "CMAKE_TOOLCHAIN_FILE",
+          "value": "${env.VCPKG_CMAKE_TOOLCHAIN_FILE}" //"D:/src/c++/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        },
+        {
+          "name": "VCPKG_TARGET_TRIPLET",
+          //"value": "x64-windows-static",
+          "value": "x64-windows"
+        },
+        {
+          "name": "MSVC_RUNTIME",
+          // "value": "static", // static or dynamic
+          "value": "dynamic" // static or dynamic
+        },
+        {
+          "name": "BUILD_SHARED_LIBS",
+          // "value": "static", // static or dynamic
+          "value": "1" // static or dynamic
+        }
+      ],
+      "ctestCommandArgs": ""
+    },
+    {
+      "name": "x64-Release",
+      "generator": "Visual Studio 15 2017 Win64",
+      "configurationType": "RelWithDebInfo",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "buildRoot": "${workspaceRoot}\\.cmake_build_vs\\${workspaceHash}\\build\\${name}",
+      "installRoot": "${workspaceRoot}\\.cmake_build_vs\\${workspaceHash}\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "-m -v:minmal",
+      "variables": [
+        {
+          "name": "CMAKE_TOOLCHAIN_FILE",
+          "value": "${env.VCPKG_CMAKE_TOOLCHAIN_FILE}" //"D:/src/c++/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        },
+        {
+          "name": "VCPKG_TARGET_TRIPLET",
+          "value": "x64-windows-static"
+        },
+        {
+          "name": "MSVC_RUNTIME",
+          "value": "static" // static or dynamic
+        }
+      ],
+      "ctestCommandArgs": ""
+    }
+  ]
+}

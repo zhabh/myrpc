@@ -1,0 +1,76 @@
+﻿@using ProtoSharp;
+@using CppGenerator;
+@{
+    DescriptorService jService = Model.JService;
+    DescriptorMethod[] jMethods = jService.MethodList;
+}
+//auto generate code
+@{string comment = "//";
+    HashSet<string> includeSet = new HashSet<string>();
+    includeSet.Add("services/" + @CppUtil.ServiceFileName(jService.Name) + ".h");
+}
+@ShowInclude(includeSet)
+namespace crucis {
+
+@(CppUtil.ServiceCppClassName(@jService.Name))::~@(CppUtil.ServiceCppClassName(@jService.Name))(){}
+void @(CppUtil.ServiceCppClassName(@jService.Name))::CallMethod(uint32 method_id, const std::string& input, std::string& out_string)
+{
+    switch (method_id) {
+@ShowVirtualCall(jMethods)
+    }
+}
+
+@comment======================================
+
+@(CppUtil.CppStyleName(@jService.Name))_stub::@(CppUtil.CppStyleName(@jService.Name))_stub(std::shared_ptr<RpcChannel> channel)
+    : channel_(channel){}
+
+    @(CppUtil.CppStyleName(@jService.Name))_stub::~@(CppUtil.CppStyleName(@jService.Name))_stub() {}
+    @ShowStubFuncImpl(jMethods, jService)
+
+} // namespace crucis
+
+@helper ShowInclude(HashSet<string> nameSet)
+{
+    foreach (var name in nameSet)
+    {
+@:#include <@name>
+}
+}
+
+@helper ShowVirtualCall(DescriptorMethod[] Methods)
+{
+    List<string> strList = new List<string>();
+    for (int i = 0; i < Methods.Count(); i++)
+    {
+        strList.Clear();
+        DescriptorMethod method = Methods[i];
+        for (int j = 0; j < method.ParamList.Count(); j++)
+        {
+            DescriptorParam param = method.ParamList[j];
+            strList.Add(@CppUtil.PBParamFuncName(@param.Name));
+        }
+@:  case @i:
+@:        {
+@:           ::crucis::@(CppUtil.PBMethodReqName(@method.Name)) request;
+@:           request.ParseFromString(input);
+@:           @(method.Name)(out_string, @CppUtil.CppParamJoin("request.", @strList));
+@:           break;
+@:        }
+    }
+@:        default:
+@:           break;
+
+}
+
+@helper ShowStubFuncImpl(DescriptorMethod[] Methods, DescriptorService jService)
+{
+    for (int i = 0; i < Methods.Count(); i++)
+    {
+        DescriptorMethod iMethod = Methods[i];
+@:void @(CppUtil.CppStyleName(@jService.Name))_stub::@iMethod.Name (uint32 method, const ::crucis::@(CppUtil.PBMethodReqName(iMethod.Name)) * request)
+@:    {
+@:      channel_->CallMethod(GetServiceId(), method, request);
+@:    }
+    }
+}

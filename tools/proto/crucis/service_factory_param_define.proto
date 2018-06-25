@@ -1,0 +1,53 @@
+
+syntax = "proto3";
+package crucis;
+
+import "auth_error_code.proto";
+
+message NewServiceSingletonRequest {
+  uint32 service_type = 1;
+}
+
+message NewServiceRequest {
+  uint32 service_type = 1;
+  uint64 object_id = 2;
+}
+
+message SyncServicesRequest {
+  repeated uint32 service_types = 1;
+  repeated uint32 service_ids = 2;
+}
+
+message BindServiceRequest {
+  int32 service_type = 1;
+}
+
+message AuthResultRequest {
+  crucis.AuthErrorCode result = 1;
+}
+
+message DeleteServiceRequest {
+  uint64 object_id = 1;
+}
+
+message ReloadServiceRequest {
+  uint32 service_type = 1;
+  uint64 object_id = 2;
+}
+
+
+//////////////////////////////////////////////////////////////////////
+
+message SyncServicesResponse {
+ bool ret = 1;
+}
+
+message BindServiceResponse {
+ bool ret = 1;
+}
+
+
+
+
+
+

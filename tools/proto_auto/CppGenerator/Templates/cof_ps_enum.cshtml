@@ -1,0 +1,23 @@
+﻿@using ProtoSharp;
+@using CppGenerator;
+@using System.Reflection;
+@{
+    DescriptorEnum jEnum = Model.PSEnum;
+}
+//auto generator code
+//enum define
+
+enum  @(CppUtil.EnumModuleName(jEnum.Name))
+{
+@for (int i = 0; i < jEnum.Fields.Count(); i++)
+{
+    var field = jEnum.Fields[i];
+    var value = (int)jEnum.Type.InvokeMember(field.Name, BindingFlags.GetField, null, null, null);
+
+@: @(CppUtil.CppEnumFieldName(field.Name)) = @value,
+   
+}
+};
+
+
+

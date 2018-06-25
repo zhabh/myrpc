@@ -1,0 +1,17 @@
+
+
+syntax = "proto3";
+
+package crucis;
+
+enum MessageType {
+  message_type_unknow = 0;
+
+  message_type_call = 1;    // 调用
+  message_type_reply = 2;    // 返回
+  message_type_exception = 3;    // 异常
+  message_type_oneway = 4;    // 单路
+};
+
+
+

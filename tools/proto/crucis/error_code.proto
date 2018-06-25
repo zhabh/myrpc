@@ -1,0 +1,16 @@
+
+
+syntax = "proto3";
+
+package crucis;
+
+enum ErrorCode {
+  error_code_unknow = 0;
+
+  error_code_ok = 1;    // 成功
+  error_code_placeholder = 2;    // 位置被占用
+  error_code_not__exist = 3;    // 不存在
+};
+
+
+

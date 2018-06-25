@@ -1,0 +1,25 @@
+
+syntax = "proto3";
+package crucis;
+
+import "add_user_res.proto";
+
+message AddUserRequest {
+  uint64 uid = 1;
+  string nick_name = 2;
+  uint32 seq_id = 3;
+  bool online = 4;
+}
+
+
+//////////////////////////////////////////////////////////////////////
+
+message AddUserResponse {
+ crucis.AddUserRes ret = 1;
+}
+
+
+
+
+
+

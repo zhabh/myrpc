@@ -1,0 +1,16 @@
+
+
+syntax = "proto3";
+package CofProtoDesc;
+
+import "cof_proto_desc/servic_result.proto";
+
+message ServiceError {
+  CofProtoDesc.ServicResult error = 1;   // 
+}
+
+
+
+
+
+

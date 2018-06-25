@@ -1,0 +1,27 @@
+﻿@using ProtoSharp;
+@using CppGenerator;
+@using System.Reflection;
+@{DescriptorEnum jEnum = Model.PSEnum;
+}
+@{string comment = "//";}
+syntax = "proto3";
+
+package @jEnum.Namespace;
+
+enum @(CppUtil.PBStyleName(jEnum.Name)) {
+@{
+    var firstValue = (int)jEnum.Type.InvokeMember(jEnum.Fields[0].Name, BindingFlags.GetField, null, null, null);
+    if (firstValue > 0)
+    {
+@:  @(CppUtil.CppStyleName(jEnum.Name))_unknow = 0;
+}}
+@for (int i = 0; i < jEnum.Fields.Count(); i++)
+{
+    var field = jEnum.Fields[i];
+    var value = (int)jEnum.Type.InvokeMember(field.Name, BindingFlags.GetField, null, null, null);
+@:  @(CppUtil.CppStyleName(jEnum.Name))_@(CppUtil.CppStyleName(field.Name)) = @value;    @comment @jEnum.Desc(field)
+}
+};
+
+
+

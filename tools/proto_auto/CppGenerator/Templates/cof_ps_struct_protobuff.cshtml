@@ -1,0 +1,67 @@
+﻿@using ProtoSharp;
+@using CppGenerator;
+@{DescriptorStruct jStruct = Model.JStruct;
+    DescriptorFiled[] jFields = jStruct.FieldList;
+    Dictionary<string, string> jHeadMap = new Dictionary<string, string>();
+}
+@{string comment = "//";}
+syntax = "proto3";
+package @jStruct.Namespace;
+@ShowImportHead(jFields, jHeadMap, @jStruct.Namespace)
+@foreach (var item in jHeadMap)
+{
+@:import "@item.Value";
+}
+
+message @(CppUtil.PBStyleName(jStruct.Name)) {
+@for (int i = 0; i < jFields.Count(); i++)
+{
+    var field = jFields[i];
+    if (field.hasLabel == true)
+    {
+        string opType = TypesOfPB.GetLabelName(field.Label);
+        var typeNameHead = TypesOfPB.GetPBName(field.Type);
+@:  @typeNameHead @CppUtil.CppStyleName(field.Name) = @field.Index;   @comment @field.Desc
+    }
+    else
+    {
+        var tyName = TypesOfPB.GetPBName(field.Type);
+@:  @tyName @CppUtil.CppStyleName(field.Name) = @field.Index;   @comment @field.Desc
+    }
+}
+}
+
+
+@helper ShowImportHead(DescriptorFiled[] Fields, Dictionary<string, string> jHeadMap, string targetSpace)
+    {
+for (int i = 0; i < Fields.Count(); i++)
+{
+    var field = Fields[i];
+    var targetType = field.Type;
+    if (targetType.IsGenericType && targetType.IsGenericTypeDefinition == false)
+    {
+        targetType = field.Type.GetGenericArguments().First();
+    }
+
+    if (!string.IsNullOrEmpty(targetType.Name) && jHeadMap.ContainsKey(targetType.Name) == false)
+    {
+        if (targetType.IsEnum == true)
+        {
+            var typeNameHead = TypesOfPB.GetTypeFileName(targetType);
+            var dir = @CppUtil.NameSpace2Dir(@CppUtil.TrimNameSpace(targetType.Namespace, targetSpace));
+            jHeadMap.Add(targetType.Name, @dir + typeNameHead + ".proto");
+        }
+        else if (TypesOfPB.IsNeedImport(targetType) == true)
+        {
+            var tpHead = TypesOfPB.GetTypeFileName(targetType);
+            var dir = @CppUtil.NameSpace2Dir(@CppUtil.TrimNameSpace(targetType.Namespace, targetSpace));
+
+            jHeadMap.Add(targetType.Name, @dir + tpHead + ".proto");
+        }
+    }
+}
+}
+
+
+
+

@@ -1,0 +1,16 @@
+
+
+syntax = "proto3";
+package crucis;
+
+import "servic_result.proto";
+
+message ServiceError {
+  crucis.ServicResult error = 1;   // 
+}
+
+
+
+
+
+

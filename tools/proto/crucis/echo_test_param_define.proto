@@ -1,0 +1,22 @@
+
+syntax = "proto3";
+package crucis;
+
+
+message EchoRequest {
+  string text = 1;
+  int32 times = 2;
+}
+
+
+//////////////////////////////////////////////////////////////////////
+
+message EchoResponse {
+ string ret = 1;
+}
+
+
+
+
+
+

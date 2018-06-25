@@ -1,0 +1,19 @@
+
+
+syntax = "proto3";
+package crucis;
+
+import "crucis/message_type.proto";
+
+message RpcResponseData {
+  crucis.MessageType type = 1;   // 
+  uint32 seq_id = 2;   // 
+  uint64 service_object = 3;   // 服务实例id号
+  bytes content = 4;   // 
+}
+
+
+
+
+
+

@@ -1,0 +1,96 @@
+﻿@using ProtoSharp;
+@using CppGenerator;
+@{
+    DescriptorService jService = Model.JService;
+    DescriptorMethod[] jMethods = jService.MethodList;
+}
+//auto generate code
+#ifndef @(CppUtil.StructHeadMacro(@CppUtil.ServiceFileName(jService.Name)))
+#define @(CppUtil.StructHeadMacro(@CppUtil.ServiceFileName(jService.Name)))
+@{string comment = "//";
+    HashSet<string> includeSet = new HashSet<string>();
+    includeSet.Add("string");
+    includeSet.Add("common/common.h");
+    includeSet.Add("services/service.h");
+    includeSet.Add("rpc_server/rpc_channel.h");
+    includeSet.Add("services/" + @CppUtil.NameSpace2Dir(@jService.Namespace) + @CppUtil.ServiceParamFileName(jService.Name) + ".pb.h");
+}
+@ShowInclude(includeSet)
+namespace crucis {
+
+class @(CppUtil.ServiceCppClassName(@jService.Name))
+ : public service
+{
+protected:
+	// This class should be treated as an abstract interface.
+	inline @(CppUtil.ServiceCppClassName(@jService.Name))() {};
+
+public:
+    virtual ~@(CppUtil.ServiceCppClassName(@jService.Name))();
+    @ShowFunctionDefine(jMethods, true)
+
+    uint32 GetMethodCount() { return @(jService.MethodList.Count()); }
+    uint32 GetServiceId() { return @jService.Index; }
+    void CallMethod(uint32 method_id, const std::string& input, std::string& out_string);
+
+private:
+    CRUCIS_DISALLOW_EVIL_CONSTRUCTORS(@(CppUtil.ServiceCppClassName(@jService.Name)));
+};
+
+class @(CppUtil.CppStyleName(@jService.Name))_stub
+: public @(CppUtil.ServiceCppClassName(@jService.Name))
+{
+public:
+    @(CppUtil.CppStyleName(@jService.Name))_stub(std::shared_ptr<RpcChannel> channel);
+    ~@(CppUtil.CppStyleName(@jService.Name))_stub();
+
+    inline std::shared_ptr<RpcChannel> channel() { return channel_; }
+
+@comment implements ------------------------------------------
+    @ShowStubFuncDefine(jMethods)
+
+private:
+    std::shared_ptr<RpcChannel> channel_;
+    CRUCIS_DISALLOW_EVIL_CONSTRUCTORS(@(CppUtil.CppStyleName(@jService.Name))_stub);
+};
+
+
+} // namespace crucis
+
+#endif @comment @(CppUtil.StructHeadMacro(@CppUtil.ServiceFileName(jService.Name)))
+
+
+@helper ShowInclude(HashSet<string> nameSet)
+{
+    foreach (var name in nameSet)
+    {
+@:#include <@name>
+}
+}
+
+@helper ShowFunctionDefine(DescriptorMethod[] Methods, bool bNullImpl)
+{
+    var str = bNullImpl ? "{}" : ";";
+    for (int i = 0; i < Methods.Count(); i++)
+    {
+        DescriptorMethod method = Methods[i];
+@:virtual void @method.Name (std::string & out
+        for (int j = 0; j < method.ParamList.Count(); j++)
+        {
+            DescriptorParam param = method.ParamList[j];
+            string typeName = TypesOfCpp.GetCppTypeName(param.Type);
+@:                           , @typeName @param.Name
+}
+@:                           )@str
+}
+}
+
+
+@helper ShowStubFuncDefine(DescriptorMethod[] Methods)
+{
+    for (int i = 0; i < Methods.Count(); i++)
+    {
+        DescriptorMethod iMethod = Methods[i];
+@:void @iMethod.Name (uint32 method, const ::crucis::@(CppUtil.PBMethodReqName(iMethod.Name)) * request);
+}
+}

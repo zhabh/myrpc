@@ -1,0 +1,121 @@
+﻿@using ProtoSharp;
+@using CppGenerator;
+@{
+    DescriptorService jService = Model.JService;
+    DescriptorMethod[] jMethods = jService.MethodList;
+    Dictionary<string, string> jHeadMap = new Dictionary<string, string>();
+    var spl = "//////////////////////////////////////////////////////////////////////";
+}
+syntax = "proto3";
+package @jService.Namespace;
+@ShowImportHead(jMethods, jHeadMap, @jService.Namespace)
+@foreach (var item in jHeadMap)
+{
+@:import "@item.Value";
+}
+
+@for (int i = 0; i < jMethods.Count(); i++)
+{
+    DescriptorMethod method = jMethods[i];
+
+@:message @(CppUtil.PBMethodReqName(method.Name)) {
+@ShowReqParam(method)
+@:}
+@:
+}
+
+@spl
+
+@for (int i = 0; i < jMethods.Count(); i++)
+{
+    DescriptorMethod method = jMethods[i];
+    if (method.isVoidReturn == false)
+    {
+@:message @(CppUtil.PBMethodReturnName(method.Name)) {
+@ShowReturnParam(method)
+@:}
+@:
+}
+}
+
+
+@helper ShowReqParam(DescriptorMethod kMethod)
+{
+    for (int i = 0; i < kMethod.ParamList.Count(); i++)
+    {
+        DescriptorParam param = kMethod.ParamList[i];
+        var typeName = TypesOfPB.GetPBName(param.Type);
+@:  @typeName @CppUtil.CppStyleName(param.Name) = @param.Position;
+    }
+}
+
+
+@helper ShowReturnParam(DescriptorMethod kMethod)
+{
+    var typeRet = kMethod.ReturnType;
+    var typeName = TypesOfPB.GetPBName(typeRet);
+@: @typeName ret = 1;
+}
+
+@helper ShowImportHead(DescriptorMethod[] jMethods, Dictionary<string, string> jHeadMap, string targetSpace)
+{
+for (int j = 0; j < jMethods.Count(); j++)
+{
+    DescriptorMethod kMethod = jMethods[j];
+    for (int i = 0; i < kMethod.ParamList.Count(); i++)
+    {
+        DescriptorParam param = kMethod.ParamList[i];
+        var targetType = param.Type;
+        if (targetType.IsGenericType && targetType.IsGenericTypeDefinition == false)
+        {
+            targetType = param.Type.GetGenericArguments().First();
+        }
+
+        if (targetType.IsEnum == true)
+        {
+            if (jHeadMap.ContainsKey(targetType.Name) == false)
+            {
+                var typeNameHead = TypesOfPB.GetTypeFileName(targetType);
+                var dir = @CppUtil.NameSpace2Dir(@CppUtil.TrimNameSpace(targetType.Namespace, targetSpace));
+                jHeadMap.Add(targetType.Name, @dir + typeNameHead + ".proto");
+            }
+        }
+        else if (TypesOfPB.IsNeedImport(targetType) == true)
+        {
+            if (jHeadMap.ContainsKey(targetType.Name) == false)
+            {
+                var tpHead = TypesOfPB.GetTypeFileName(targetType);
+                var dir = @CppUtil.NameSpace2Dir(@CppUtil.TrimNameSpace(targetType.Namespace, targetSpace));
+                jHeadMap.Add(targetType.Name, @dir + tpHead + ".proto");
+            }
+        }
+    }
+
+    var targetTypeRet = kMethod.ReturnType;
+    if (targetTypeRet.IsGenericType && targetTypeRet.IsGenericTypeDefinition == false)
+    {
+        targetTypeRet = kMethod.ReturnType.GetGenericArguments().First();
+    }
+
+    if (targetTypeRet.IsEnum == true)
+    {
+        if (jHeadMap.ContainsKey(targetTypeRet.Name) == false)
+        {
+            var typeNameHead = TypesOfPB.GetTypeFileName(targetTypeRet);
+            var dir = @CppUtil.NameSpace2Dir(@CppUtil.TrimNameSpace(targetTypeRet.Namespace, targetSpace));
+
+            jHeadMap.Add(targetTypeRet.Name, @dir + typeNameHead + ".proto");
+        }
+    }
+    else if (TypesOfPB.IsNeedImport(targetTypeRet) == true)
+    {
+        if (jHeadMap.ContainsKey(targetTypeRet.Name) == false)
+        {
+            var tpHead = TypesOfPB.GetTypeFileName(targetTypeRet);
+            var dir = @CppUtil.NameSpace2Dir(@CppUtil.TrimNameSpace(targetTypeRet.Namespace, targetSpace));
+
+            jHeadMap.Add(targetTypeRet.Name, @dir + tpHead + ".proto");
+        }
+    }
+}
+}

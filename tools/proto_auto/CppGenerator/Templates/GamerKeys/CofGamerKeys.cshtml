@@ -1,0 +1,58 @@
+﻿@using ProtoSharp;
+@using CppGenerator;
+@{
+    List<DescriptorStruct> jStructs = Model.JStructs;
+}
+%%%-------------------------------------------------------------------
+%%% @@author flysp
+%%% @@copyright (C) 2015, <COMPANY>
+%%% @@doc
+%%%
+%%% @@end
+%%% Created : 17. Apr 2015 5:41 PM
+%%%-------------------------------------------------------------------
+-module(cof_gamer_keys).
+-author("flysp").
+-include("protosharp.hrl").
+
+%% API
+-compile(export_all).
+
+%%--------------------------------------------------------------------
+%% @@doc
+%% @@end
+%%--------------------------------------------------------------------
+ets(GamerId) when is_integer(GamerId) ->
+  lists:foldl(
+    fun
+      (Struct, Acc) ->
+        Struct:all_keys(GamerId) ++ Acc
+    end, [GamerId, self()], structs()
+  );
+ets(GamerPid) when is_pid(GamerPid) ->
+  case gamer:ets_get(GamerPid) of
+    {_, GamerId} when is_integer(GamerId) ->
+      ets(GamerId);
+    _ ->
+      []
+  end.
+
+%%--------------------------------------------------------------------
+%% @@doc
+%% @@end
+%%--------------------------------------------------------------------
+structs()->
+  [
+@for(int i = 0; i < jStructs.Count; i++)
+{
+  var jstruct = jStructs[i];
+  if (i == 0)
+  {  
+   @:@jstruct.Name
+  } 
+  else
+  {
+  @:,@jstruct.Name
+  }
+}
+  ].

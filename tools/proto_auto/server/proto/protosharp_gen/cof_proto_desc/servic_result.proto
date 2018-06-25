@@ -1,0 +1,13 @@
+
+
+syntax = "proto3";
+
+package CofProtoDesc;
+
+enum ServicResult {
+
+  servic_result_unknown = 0;    // 
+};
+
+
+

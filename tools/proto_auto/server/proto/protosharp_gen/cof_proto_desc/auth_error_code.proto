@@ -1,0 +1,16 @@
+
+
+syntax = "proto3";
+
+package CofProtoDesc;
+
+enum AuthErrorCode {
+  auth_error_code_unknow = 0;
+
+  auth_error_code_pass = 1;    // 密码错误
+  auth_error_code_error_password = 2;    // 密码错误
+  auth_error_code_gamer_not_found = 3;    // 账号认证通过但是没有注册角色
+};
+
+
+
